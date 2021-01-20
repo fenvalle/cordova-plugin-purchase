@@ -1317,7 +1317,7 @@ store.order = function(pid, additionalData) {
     }
 
     var a; // short name for additionalData
-    if (additionalData && typeof additionalData === 'object') {
+    if (additionalData) {
         a = p.additionalData = Object.assign({}, additionalData);
     }
     else {
@@ -2937,7 +2937,7 @@ if (typeof Object.assign != 'function') {
     };
 }
 
-store.version = '10.5.3';
+store.version = '10.5.0';
 /*
  * Copyright (C) 2012-2013 by Guillaume Charhon
  * Modifications 10/16/2013 by Brian Thurlow
@@ -3161,7 +3161,8 @@ var BILLING_RESPONSE_RESULT = {
 
 function init() {
     if (initialized) return;
-    initialized = true;
+    //initialized = true; --always retry
+    if (store.products.every(product => skus.includes(product.id))) return;
 
     for (var i = 0; i < store.products.length; ++i) {
       skus.push(store.products[i].id);
@@ -3170,6 +3171,12 @@ function init() {
       else
         inAppSkus.push(store.products[i].id);
     }
+
+    //removing duplicates//
+    skus = [...new Set(skus)]
+    subsSkus = [...new Set(subsSkus)]
+    inAppSkus = [...new Set(inAppSkus)]
+    //removing duplicates//
 
     store.inappbilling.init(iabReady,
         function(err) {
