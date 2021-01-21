@@ -3161,8 +3161,8 @@ var BILLING_RESPONSE_RESULT = {
 
 function init() {
     if (initialized) return;
-    //initialized = true; --always retry
-    if (store.products.every(product => skus.includes(product.id))) return;
+    //initialized = true; //can init always
+    if (store.products.filter(p=> p.type === store.PAID_SUBSCRIPTION).every(product => skus.includes(product.id))) return; //if needed to register
 
     for (var i = 0; i < store.products.length; ++i) {
       skus.push(store.products[i].id);
@@ -3172,12 +3172,13 @@ function init() {
         inAppSkus.push(store.products[i].id);
     }
 
-    //removing duplicates//
+    // //removing duplicates//
     skus = [...new Set(skus)]
     subsSkus = [...new Set(subsSkus)]
     inAppSkus = [...new Set(inAppSkus)]
-    //removing duplicates//
 
+    console.log("init", JSON.stringify(skus),JSON.stringify(subsSkus),JSON.stringify(inAppSkus));
+    
     store.inappbilling.init(iabReady,
         function(err) {
             initialized = false;
@@ -3206,6 +3207,8 @@ function iabReady() {
         });
     });
 }
+//refreshProducts when ready
+store.refreshProducts = iabReady
 
 function iabPurchaseConsumed(purchase) {
   store.log.debug("iabPurchaseConsumed: " + JSON.stringify(purchase));
