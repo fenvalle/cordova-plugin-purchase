@@ -3172,12 +3172,10 @@ function init() {
         inAppSkus.push(store.products[i].id);
     }
 
-    // //removing duplicates//
+    //removing duplicates//
     skus = [...new Set(skus)]
     subsSkus = [...new Set(subsSkus)]
     inAppSkus = [...new Set(inAppSkus)]
-
-    console.log("init", JSON.stringify(skus),JSON.stringify(subsSkus),JSON.stringify(inAppSkus));
     
     store.inappbilling.init(iabReady,
         function(err) {
